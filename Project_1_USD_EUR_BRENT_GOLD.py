@@ -102,7 +102,7 @@ message_for_vk_and_telegram = f'Курсы дня, {today_day}: \n\nUSD:  {usd} 
 
 
 def report_to_vk():
-    token = '6ceed695e050149c36b705006d51139574adade15213093ceda7f5b2fe40f8f3a85e00d2ddad94a5fcb0c'
+    token = '6ceed695e050149c36b705006d51139574adade15213093ceda7f5b2fe4XXXXXXXXXXXXXXXXXXXXc'
     vk_session = vk_api.VkApi(token=token)
     vk = vk_session.get_api()
 
@@ -119,12 +119,12 @@ def report_to_vk():
 
 def report_to_telegram():
     message_telegram = message_for_vk_and_telegram
-    token = '1127113079:AAFeKXAd0ZtO6J7VLKXUOzYEoAawQEVeSEk'
+    token = '1127113079:AAFeKXAd0ZtO6J7XXXXXXXXXXXXXXX'
     chat_id = 1275857904  # your chat id
 
     message = message_telegram  # text which you want to send
     chats = [877171139, 728548581, 1275857904]
-    url_get = 'https://api.telegram.org/bot1127113079:AAFeKXAd0ZtO6J7VLKXUOzYEoAawQEVeSEk/getUpdates'
+    url_get = 'https://api.telegram.org/bot1127113079:AAFeKXAd0ZtO6J7XXXXXXXXXXXXXXX/getUpdates'
     response = requests.get(url_get)
 
     # Add new users
