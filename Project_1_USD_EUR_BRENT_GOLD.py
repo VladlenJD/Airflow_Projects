@@ -28,7 +28,7 @@ dag = DAG('USD_EUR_BRENT_GOLD_daily_report',
           schedule_interval='30 5,11 * * *')
 
 
-# Read data from RBC
+# Read data(BRENT & GOLD) from RBC
 
 # BRENT
 
@@ -62,9 +62,12 @@ with open("GOLD.html", "r", encoding='utf-8') as f:
             b.append(i)
     gold = b[0] + ' ' + b[1].strip() + ' ' + b[2].strip()
 
+
+# Read data(USD & EUR) from CBR
+
 # USD
 
-t_3 = request('GET', 'https://quote.rbc.ru/ticker/72413').text
+t_3 = request('GET', 'https://www.cbr.ru/').text
 with open('USD.html', 'w', encoding='utf-8') as f:
     f.write(t_3)
 
@@ -72,13 +75,13 @@ with open("USD.html", "r", encoding='utf-8') as f:
 
     contents = f.read()
     soup = BeautifulSoup(contents, 'lxml')
-    strings = soup.find_all(string=re.compile('₽'))
+    strings = soup.find_all(string=re.compile('^\w+'))
 
-    usd = '₽ ' + strings[7].strip()[1:-1] + ' ЦБ РФ'
+    usd = f'₽ {strings[strings.index("Доллар США") + 2][:-2]} ЦБ РФ'
 
 # EUR
 
-t_4 = request('GET', 'https://quote.rbc.ru/ticker/72383').text
+t_4 = request('GET', 'https://www.cbr.ru/').text
 with open('EUR.html', 'w', encoding='utf-8') as f:
     f.write(t_4)
 
@@ -86,9 +89,9 @@ with open("EUR.html", "r", encoding='utf-8') as f:
 
     contents = f.read()
     soup = BeautifulSoup(contents, 'lxml')
-    strings = soup.find_all(string=re.compile('₽'))
+    strings = soup.find_all(string=re.compile('^\w+'))
 
-    euro = '₽ ' + strings[7].strip()[1:-1] + ' ЦБ РФ'
+    euro = f'₽ {strings[strings.index("Евро") + 2][:-2]} ЦБ РФ'
 
 print('Data from RBC read')
 
@@ -102,7 +105,7 @@ message_for_vk_and_telegram = f'Курсы дня, {today_day}: \n\nUSD:  {usd} 
 
 
 def report_to_vk():
-    token = '6ceed695e050149c36b705006d51139574adade15213093ceda7f5b2fe4XXXXXXXXXXXXXXXXXXXXc'
+    token = '6ceed695e050149c36b705006d51139574adade15213093cedaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
     vk_session = vk_api.VkApi(token=token)
     vk = vk_session.get_api()
 
@@ -119,12 +122,12 @@ def report_to_vk():
 
 def report_to_telegram():
     message_telegram = message_for_vk_and_telegram
-    token = '1127113079:AAFeKXAd0ZtO6J7XXXXXXXXXXXXXXX'
-    chat_id = 1275857904  # your chat id
+    token = '1127113079:XXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+    chat_id = 127585XXXX  # your chat id
 
     message = message_telegram  # text which you want to send
-    chats = [877171139, 728548581, 1275857904]
-    url_get = 'https://api.telegram.org/bot1127113079:AAFeKXAd0ZtO6J7XXXXXXXXXXXXXXX/getUpdates'
+    chats = [87717XXXX, 72854XXXX, 127585XXXX]
+    url_get = 'https://api.telegram.org/bot1127113079:XXXXXXXXXXXXXXXXXXXXXXXXXXXXX/getUpdates'
     response = requests.get(url_get)
 
     # Add new users
