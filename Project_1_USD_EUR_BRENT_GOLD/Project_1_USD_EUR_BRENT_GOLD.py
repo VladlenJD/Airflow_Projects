@@ -70,6 +70,7 @@ with open("GOLD.html", "r", encoding='utf-8') as f:
 today_day = datetime.now().date().strftime('%d.%m.%Y')
 yesterday = datetime.strftime(datetime.now() - timedelta(1), '%d.%m.%Y')
 
+# USD today
 t_3 = request('GET', f'https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={today_day}').text
 with open('USD.html', 'w', encoding='utf-8') as f:
     f.write(t_3)
@@ -80,6 +81,8 @@ with open("USD.html", "r", encoding='utf-8') as f:
     soup = BeautifulSoup(contents, 'lxml')
     strings = soup.find_all(string=re.compile('^\w+'))
     usd_1 = strings[strings.index("Доллар США") + 1][:-2]
+
+# USD yesterday
 
 t_33 = request('GET',
                f'https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={yesterday}').text
@@ -92,6 +95,8 @@ with open("USD2.html", "r", encoding='utf-8') as f:
     strings = soup.find_all(string=re.compile('^\w+'))
     usd_2 = strings[strings.index("Доллар США") + 1][:-2]
 
+# USD change
+
 usd_diff = round(float(usd_1.replace(',', '.')) - float(usd_2.replace(',', '.')), 2)
 if usd_diff >= 0:
     usd = f'₽ {usd_1} (+{usd_diff}) ЦБ РФ'
@@ -99,6 +104,8 @@ else:
     usd = f'₽ {usd_1} ({usd_diff}) ЦБ РФ'
 
 # EUR
+
+# EUR today
 
 t_4 = request('GET', f'https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={today_day}').text
 with open('EUR.html', 'w', encoding='utf-8') as f:
@@ -111,6 +118,8 @@ with open("EUR.html", "r", encoding='utf-8') as f:
     strings = soup.find_all(string=re.compile('^\w+'))
     euro_1 = strings[strings.index("Евро") + 1][:-2]
 
+# EUR yesterday
+
 t_44 = request('GET',
                f'https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={yesterday}').text
 with open('EUR2.html', 'w', encoding='utf-8') as f:
@@ -121,6 +130,8 @@ with open("EUR2.html", "r", encoding='utf-8') as f:
     soup = BeautifulSoup(contents, 'lxml')
     strings = soup.find_all(string=re.compile('^\w+'))
     euro_2 = strings[strings.index("Евро") + 1][:-2]
+
+# EUR change
 
 euro_diff = round(float(euro_1.replace(',', '.')) - float(euro_2.replace(',', '.')), 2)
 if euro_diff >= 0:
