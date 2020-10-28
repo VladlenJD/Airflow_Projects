@@ -86,13 +86,19 @@ top = TOP_10.rename(columns={'Confirmed_add': 'Growth'})['Growth'].to_csv(sep='�
 today = datetime.strftime(datetime.now() - timedelta(1), '%d-%m-%Y')
 print('Data transform')
 
+# Read timeseries_confirmed_global
 
 confirmed = pd.read_csv('https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv')
 
+# Let's take the last 2 weeks
 confirmed_by_days = confirmed[confirmed.columns[-15:]]
+
+# Beautiful charts settings
 
 plt.style.use('ggplot')                       # Красивые графики
 plt.rcParams['figure.figsize'] = (30, 20)
+
+# Dataframe for vizualization
 
 viz = confirmed_by_days.sum().to_frame('confirmed_viz').reset_index(drop=False)
 viz = viz.rename(columns={'index': 'date'})
@@ -106,6 +112,7 @@ fig = plt.figure()
 fig.patch.set_facecolor('#CCFFFF')
 plt.title('Growth by World', fontsize=100, pad=60)
 
+# Building a barplot
 
 ax = sns.barplot(x = vizual.date, y = 'confirmed_count', data = vizual, palette='ch:s=-.2,r=.6')
 
@@ -127,10 +134,11 @@ fig.savefig('Add_Confirmed', facecolor=fig.get_facecolor())
 
 ax.set_frame_on(False)
 
+# Report to VK
 
 def daily_report_to_vk():
 
-    app_token = '6ceed695e050149c36b705006d51139574adade15213093ceda7f5b2fe40f8f3a85e00d2ddad94a5fcb0c'
+    app_token = '6ceed695e050149c36b705006d51139XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
     vk_session = vk_api.VkApi(token=app_token)
     vk = vk_session.get_api()
 
@@ -146,18 +154,19 @@ def daily_report_to_vk():
         )
     print('Report send')
 
+# Report to Telegram
 
 def daily_report_to_telegram():
     # Create message for Telegram
     message_telegram = f''' TOP_10 countries with the worst distribution dynamics of COVID-19 \n\n Report for: {today}\n\n
                     {top}'''
     # Send message to Telegram
-    token = '1075693341:AAENYAcHF5KewVM-xYl6xVkQu2sj9YFkHdo'
-    # chat_id = 1275857904  # my chat id
+    token = '10756XXXX1:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+    # chat_id = 127585XXXX  # my chat id
 
     message = message_telegram  # message which I want to send
-    chats = [728548581, 1275857904]
-    url_get = 'https://api.telegram.org/bot1127113079:AAFeKXAd0ZtO6J7VLKXUOzYEoAawQEVeSEk/getUpdates'
+    chats = [72854XXXX, 127585XXXX]
+    url_get = 'https://api.telegram.org/bot112711XXXX:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX/getUpdates'
     response = requests.get(url_get)
 
     # Add new users
