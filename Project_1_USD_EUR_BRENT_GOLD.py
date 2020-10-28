@@ -67,7 +67,10 @@ with open("GOLD.html", "r", encoding='utf-8') as f:
 
 # USD
 
-t_3 = request('GET', 'https://www.cbr.ru/').text
+today_day = datetime.now().date().strftime('%d.%m.%Y')
+yesterday = datetime.strftime(datetime.now() - timedelta(1), '%d.%m.%Y')
+
+t_3 = request('GET', f'https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={today_day}').text
 with open('USD.html', 'w', encoding='utf-8') as f:
     f.write(t_3)
 
@@ -76,12 +79,28 @@ with open("USD.html", "r", encoding='utf-8') as f:
     contents = f.read()
     soup = BeautifulSoup(contents, 'lxml')
     strings = soup.find_all(string=re.compile('^\w+'))
+    usd_1 = strings[strings.index("Доллар США") + 1][:-2]
 
-    usd = f'₽ {strings[strings.index("Доллар США") + 2][:-2]} ЦБ РФ'
+t_33 = request('GET',
+               f'https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={yesterday}').text
+with open('USD2.html', 'w', encoding='utf-8') as f:
+    f.write(t_33)
+
+with open("USD2.html", "r", encoding='utf-8') as f:
+    contents = f.read()
+    soup = BeautifulSoup(contents, 'lxml')
+    strings = soup.find_all(string=re.compile('^\w+'))
+    usd_2 = strings[strings.index("Доллар США") + 1][:-2]
+
+usd_diff = round(float(usd_1.replace(',', '.')) - float(usd_2.replace(',', '.')), 2)
+if usd_diff >= 0:
+    usd = f'₽ {usd_1} (+{usd_diff}) ЦБ РФ'
+else:
+    usd = f'₽ {usd_1} ({usd_diff}) ЦБ РФ'
 
 # EUR
 
-t_4 = request('GET', 'https://www.cbr.ru/').text
+t_4 = request('GET', f'https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={today_day}').text
 with open('EUR.html', 'w', encoding='utf-8') as f:
     f.write(t_4)
 
@@ -90,8 +109,24 @@ with open("EUR.html", "r", encoding='utf-8') as f:
     contents = f.read()
     soup = BeautifulSoup(contents, 'lxml')
     strings = soup.find_all(string=re.compile('^\w+'))
+    euro_1 = strings[strings.index("Евро") + 1][:-2]
 
-    euro = f'₽ {strings[strings.index("Евро") + 2][:-2]} ЦБ РФ'
+t_44 = request('GET',
+               f'https://www.cbr.ru/currency_base/daily/?UniDbQuery.Posted=True&UniDbQuery.To={yesterday}').text
+with open('EUR2.html', 'w', encoding='utf-8') as f:
+    f.write(t_44)
+
+with open("EUR2.html", "r", encoding='utf-8') as f:
+    contents = f.read()
+    soup = BeautifulSoup(contents, 'lxml')
+    strings = soup.find_all(string=re.compile('^\w+'))
+    euro_2 = strings[strings.index("Евро") + 1][:-2]
+
+euro_diff = round(float(euro_1.replace(',', '.')) - float(euro_2.replace(',', '.')), 2)
+if euro_diff >= 0:
+    euro = f'₽ {euro_1} (+{euro_diff}) ЦБ РФ'
+else:
+    euro = f'₽ {euro_1} ({euro_diff}) ЦБ РФ'
 
 print('Data from RBC read')
 
@@ -105,7 +140,7 @@ message_for_vk_and_telegram = f'Курсы дня, {today_day}: \n\nUSD:  {usd} 
 
 
 def report_to_vk():
-    token = '6ceed695e050149c36b705006d51139574adade15213093cedaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+    token = '6ceed695e050149c36b705006d51139574adade15213093ceda7f5b2fe40f8f3a85e00d2ddad94a5fcb0c'
     vk_session = vk_api.VkApi(token=token)
     vk = vk_session.get_api()
 
@@ -122,12 +157,12 @@ def report_to_vk():
 
 def report_to_telegram():
     message_telegram = message_for_vk_and_telegram
-    token = '1127113079:XXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-    chat_id = 127585XXXX  # your chat id
+    token = '1127113079:AAFeKXAd0ZtO6J7VLKXUOzYEoAawQEVeSEk'
+    chat_id = 1275857904  # your chat id
 
     message = message_telegram  # text which you want to send
-    chats = [87717XXXX, 72854XXXX, 127585XXXX]
-    url_get = 'https://api.telegram.org/bot1127113079:XXXXXXXXXXXXXXXXXXXXXXXXXXXXX/getUpdates'
+    chats = [877171139, 728548581, 1275857904]
+    url_get = 'https://api.telegram.org/bot1127113079:AAFeKXAd0ZtO6J7VLKXUOzYEoAawQEVeSEk/getUpdates'
     response = requests.get(url_get)
 
     # Add new users
