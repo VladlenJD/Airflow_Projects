@@ -66,12 +66,12 @@ covid_tdb_yesterday['Case_Fatality_Ratio'] = covid_tdb_yesterday.Deaths / covid_
 covid_yesterday['Case_Fatality_Ratio'] = covid_yesterday.Deaths / covid_yesterday.Confirmed * 100
 
 # Create new dataframe and add columns
-covid_progress = pd.DataFrame(covid_yesterday['Country_Region'])
-covid_progress = covid_progress.assign(Confirmed_add=covid_yesterday.Confirmed - covid_tdb_yesterday.Confirmed,
-                                       Deaths_add=covid_yesterday.Deaths - covid_tdb_yesterday.Deaths,
-                                       Recovered_add=covid_yesterday.Recovered - covid_tdb_yesterday.Recovered,
-                                       Active_add=covid_yesterday.Active - covid_tdb_yesterday.Active,
-                                       Case_Fatality_Ratio_Change=covid_yesterday.Case_Fatality_Ratio - covid_tdb_yesterday.Case_Fatality_Ratio)
+covid_progress = covid_yesterday.merge(covid_tdb_yesterday, on='Country_Region')
+covid_progress = covid_progress.assign(Confirmed_add = covid_progress.Confirmed_x - covid_progress.Confirmed_y,
+                                       Deaths_add    = covid_progress.Deaths_x - covid_progress.Deaths_y,
+                                       Recovered_add = covid_progress.Recovered_x - covid_progress.Recovered_y,
+                                       Active_add    = covid_progress.Active_x - covid_progress.Active_y,
+                          Case_Fatality_Ratio_Change = covid_progress.Case_Fatality_Ratio_x - covid_progress.Case_Fatality_Ratio_y)
 
 # Create dataframe with TOP_10 countries with the worst distribution dynamics of COVID
 TOP_10 = covid_progress.sort_values(['Confirmed_add', 'Recovered_add', 'Deaths_add', 'Active_add'],
