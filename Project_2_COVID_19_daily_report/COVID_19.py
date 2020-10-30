@@ -170,11 +170,21 @@ def daily_report_to_telegram():
     response = requests.get(url_get)
 
     # Add new users
+    new_chats = []
     if len(response.json()['result']) != 0:
         for i in response.json()['result']:
-            if i['message']['chat']['id'] not in chats:
-                chats.append(i['message']['chat']['id'])
+            if i['message']['chat']['id'] not in new_chats:
+                new_chats.append(i['message']['chat']['id'])
 
+    with open('CHATS_C', 'r') as f:
+        for line in f:
+            chats.append(int(line.strip()))
+    with open('CHATS_C', 'a') as f:
+        for c in new_chats:
+            if c not in chats:
+                chats.append(c)
+                f.write(str(c) + '\n')
+                
     for chat in chats:
         params = {'chat_id': chat, 'text': message}
 
