@@ -186,8 +186,8 @@ def report_to_telegram():
     new_chats = []
     if len(response.json()['result']) != 0:
         for i in response.json()['result']:
-            if i['message']['chat']['id'] not in chats:
-                chats.append(i['message']['chat']['id'])
+            if i['message']['chat']['id'] not in new_chats:
+                new_chats.append(i['message']['chat']['id'])
                 
     with open('CHATS', 'r') as f:
         for line in f:
