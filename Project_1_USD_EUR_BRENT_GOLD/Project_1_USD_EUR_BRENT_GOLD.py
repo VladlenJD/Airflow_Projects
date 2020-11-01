@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 from datetime import date
+import time
 import re
 import requests
 from requests import request
@@ -25,7 +26,7 @@ default_args = {
 dag = DAG('USD_EUR_BRENT_GOLD_daily_report',
           default_args=default_args,
           catchup=False,
-          schedule_interval='30 5,11 * * *')
+          schedule_interval='45 5,11 * * *')
 
 
 # Read data(BRENT & GOLD) from RBC
@@ -205,6 +206,7 @@ def report_to_telegram():
                     f.write(str(c) + '\n')
 
     for chat in chats:
+        time.sleep(0.1)
         params = {'chat_id': chat, 'text': message}
 
         base_url = f'https://api.telegram.org/bot{token}/'
