@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 from datetime import date
+import time
 import requests
 import pandas as pd
 import random
@@ -98,6 +99,23 @@ confirmed_by_days = confirmed[confirmed.columns[-15:]]
 plt.style.use('ggplot')                       # Красивые графики
 plt.rcParams['figure.figsize'] = (30, 20)
 
+
+# Function for autolable bars
+def autolabel(rects, labels=None, height_factor=1.01):
+    for i, rect in enumerate(rects):
+        height = rect.get_height()
+        if labels is not None:
+            try:
+                label = labels[i]
+            except (TypeError, KeyError):
+                label = ' '
+        else:
+            label = '%d' % int(height)
+        ax.text(rect.get_x() + rect.get_width()/2., height_factor*height,
+                '{:,g}'.format(round(int(label)/1000)),
+                ha='center', va='bottom', fontsize=40, color='white')
+
+
 # Dataframe for vizualization
 
 viz = confirmed_by_days.sum().to_frame('confirmed_viz').reset_index(drop=False)
@@ -122,11 +140,11 @@ plt.xlabel('Daily Cases', fontsize=80, labelpad=50)
 plt.ylabel('Confirmed', fontsize=60, labelpad=30)
 
 plt.xticks(fontsize=30)
-plt.yticks(fontsize=30)
+plt.yticks(fontsize=50)
 
 ax.yaxis.set_major_formatter(FuncFormatter(lambda y, p: '{:,g}k'.format(y/1000)))
 
-
+autolabel(ax.patches, height_factor=0.92)
 ax.set_facecolor('#CCFFFF')
 ax.grid(color='grey', linewidth=2, linestyle='--')
 
@@ -192,6 +210,7 @@ def daily_report_to_telegram():
                     f.write(str(c) + '\n')
                 
     for chat in chats:
+        time.sleep(0.1)
         params = {'chat_id': chat, 'text': message}
 
         base_url = f'https://api.telegram.org/bot{token}/'
