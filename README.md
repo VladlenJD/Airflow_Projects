@@ -9,4 +9,4 @@ Project_2_COVID_19_daily_report(message & chart).
 
 Sends a daily report to me in the social network Vkontakte(message) and 
 to everyone who subscribed to my bot COVID-19_daily_report in Telegram(message & chart).
-https://t.me/BCEM_BOTAM_bot
+https://t.me/COVID_19_news_report_bot
