@@ -36,16 +36,22 @@ dag = DAG('USD_EUR_BRENT_GOLD_daily_report',
 t = request('GET', 'https://quote.rbc.ru/ticker/181206').text
 with open('BRENT.html', 'w', encoding='utf-8') as f:
     f.write(t)
-a = []
+
 with open("BRENT.html", "r", encoding='utf-8') as f:
 
     contents = f.read()
     soup = BeautifulSoup(contents, 'lxml')
     strings = soup.find_all(string=re.compile('$'))
-    for i in strings:
-        if i == '$' or i[0].isdigit() or '%' in i:
-            a.append(i)
-    brent = a[0] + ' ' + a[1].strip() + ' ' + a[2].strip()
+a = []
+for i in strings:
+    if i != '\n':
+        a.append(i.strip())
+    else:
+        continue
+for i in range(len(a)):
+    if a[i] == 'BRENT' and a[i+1].startswith('$'):
+        brent = a[i+1] + a[i+2]
+        break
 
 # GOLD
 
@@ -57,11 +63,18 @@ with open("GOLD.html", "r", encoding='utf-8') as f:
 
     contents = f.read()
     soup = BeautifulSoup(contents, 'lxml')
-    strings = soup.find_all(string=re.compile('$'))
-    for i in strings:
-        if i == '$' or i[0].isdigit() or '%' in i:
-            b.append(i)
-    gold = b[0] + ' ' + b[1].strip() + ' ' + b[2].strip()
+    strings_2 = soup.find_all(string=re.compile('$'))
+b = []
+for i in strings_2:
+    if i != '\n':
+        b.append(i.strip())
+    else:
+        continue
+
+for i in range(len(b)):
+    if b[i] == 'GOLD' and b[i+1].startswith('$'):
+        gold = b[i+1] + b[i+2]
+        break
 
 
 # Read data(USD & EUR) from CBR
